@@ -4,5 +4,7 @@
     <string name="app_name">CivilSociety</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="connection_error">Отсутствует подключение</string>
+    <string name="server_connection_error">Ошибка соединения с сервером</string>
 
 </resources>

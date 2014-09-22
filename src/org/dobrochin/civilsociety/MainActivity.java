@@ -1,5 +1,6 @@
 package org.dobrochin.civilsociety;
 
+import org.dobrochin.civilsociety.requests.RequestQuery;
 import org.dobrochin.civilsociety.requests.RequestService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 public class MainActivity extends BaseActivity {
 	private static final String CACHE_LOGIN = "login";
 	private static final String CACHE_PASSWORD = "password";		
-	private TextView res;
+	public static TextView res;
 	private EditText login;
 	private EditText password;
 	@Override
