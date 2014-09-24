@@ -1,6 +1,5 @@
 package org.dobrochin.civilsociety;
 
-import org.dobrochin.civilsociety.requests.RequestQuery;
 import org.dobrochin.civilsociety.requests.RequestService;
 import org.json.JSONException;
 import org.json.JSONObject;

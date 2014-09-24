@@ -86,7 +86,7 @@ public class RequestService extends IntentService{
 		{
 			String errorDescription[] = new String[1];
 			int responseState = getResponseState(response, errorDescription);
-			if(responseState == STATE_OK) sendResponse(action, response);
+			if(responseState == STATE_OK) sendResponse(action, response, intent.getStringExtra(RequestQuerue.QUERY_ID));
 			else sendRequestBack(intent, action, errorDescription[0], responseState);
 		}
 		else
@@ -112,11 +112,12 @@ public class RequestService extends IntentService{
 		}
 		return state;
 	}
-	private void sendResponse(String action, String response)
+	private void sendResponse(String action, String response, String queryId)
 	{
 		Intent intentResponse = new Intent();
 		intentResponse.setAction(action);
 		intentResponse.putExtra(RESPONSE_STATE, STATE_OK);
+		if(queryId != null) intentResponse.putExtra(RequestQuerue.QUERY_ID, queryId);
 		intentResponse.putExtra(RESPONSE, response);
 		sendBroadcast(intentResponse);
 	}

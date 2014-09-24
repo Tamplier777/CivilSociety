@@ -15,10 +15,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
-        <receiver android:name="org.dobrochin.civilsociety.requests.RequestQuery" android:exported="false">
+        <receiver android:name="org.dobrochin.civilsociety.requests.RequestQuerue" android:exported="false">
             <intent-filter>
                 <action android:name="org.dobrochin.civilsociety.requests.RequestQuery.ACTION_ADD"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="org.dobrochin.civilsociety.requests.RequestQuery.ACTION_CHECK_RESPONSE"/>
             </intent-filter>
         </receiver>
         

@@ -3,7 +3,7 @@ package org.dobrochin.civilsociety;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.dobrochin.civilsociety.requests.RequestQuery;
+import org.dobrochin.civilsociety.requests.RequestQuerue;
 import org.dobrochin.civilsociety.requests.RequestService;
 import org.dobrochin.civilsociety.requests.models.LogRequestModel;
 import org.dobrochin.civilsociety.requests.models.RequestWrapper;
@@ -50,7 +50,7 @@ public abstract class BaseActivity extends Activity {
 					switch(action)
 					{
 						case RequestService.ACTION_SAVE_WITHOUT_DIALOG:
-							intent.setAction(RequestQuery.ACTION_ADD);
+							intent.setAction(RequestQuerue.ACTION_ADD);
 							sendBroadcast(intent);
 							break;
 						case RequestService.ACTION_SHOW_ALERT_DIALOG:

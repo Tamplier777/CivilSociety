@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="connection_error">Отсутствует подключение</string>
     <string name="server_connection_error">Ошибка соединения с сервером</string>
+    <string name="request_queue_sended_successfuly">Запросы из очереди успешно отправлены на сервер</string>
 
 </resources>
