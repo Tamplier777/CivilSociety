@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
-public interface CurrentParser {
+public interface CurrentAuth {
 	public String getName(JSONObject data);
 	public String getAuthURL();
 	public String getRedirectURL();

@@ -16,6 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.dobrochin.civilsociety.R;
+import org.dobrochin.civilsociety.social.VKAuth;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,7 +79,7 @@ public class RequestService extends IntentService{
 					break;
 				case REQUEST_GET_VK_PROFILE:
 					String vkToken = intent.getStringExtra(SOCIAL_NETWORK_TOKEN);
-					response = sendGetRequest(URL.VK_GET_PROFILE_INFO.replace("$token", vkToken));
+					response = sendGetRequest(VKAuth.VK_GET_PROFILE_INFO.replace("$token", vkToken));
 					break;
 			}
 		}

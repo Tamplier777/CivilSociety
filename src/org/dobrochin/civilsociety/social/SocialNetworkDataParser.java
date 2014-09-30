@@ -1,24 +1,29 @@
 package org.dobrochin.civilsociety.social;
 
 import org.dobrochin.civilsociety.requests.URL;
-import org.dobrochin.civilsociety.requests.URL.SOCIAL_NETWORKS_LIST;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 
 public class SocialNetworkDataParser {
+	
+	//Социальные сети:
+	public enum SOCIAL_NETWORKS_LIST {VK, FACEBOOK, GOOGLEP, TWITTER, LINKEDLN, MAILRU, YANDEX, ODNOKLASSNIKI};
+	
 	private JSONObject profileData;
-	private URL.SOCIAL_NETWORKS_LIST networkName;
-	private CurrentParser currentParser;
-	public SocialNetworkDataParser(URL.SOCIAL_NETWORKS_LIST network)
+	private SOCIAL_NETWORKS_LIST networkName;
+	private CurrentAuth currentParser;
+	public SocialNetworkDataParser(SOCIAL_NETWORKS_LIST network)
 	{
 		networkName = network;
 		switch(network)
 		{
 			case VK:
-				currentParser = new VKParser();
+				currentParser = new VKAuth();
 				break;
+			case FACEBOOK:
+				currentParser = new FacebookAuth();
 			default:
 				break;
 		}

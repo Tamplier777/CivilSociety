@@ -3,7 +3,7 @@ package org.dobrochin.civilsociety;
 import org.dobrochin.civilsociety.requests.RequestService;
 import org.dobrochin.civilsociety.requests.URL;
 import org.dobrochin.civilsociety.social.SocialNetworkDataParser;
-import org.dobrochin.civilsociety.social.VKParser;
+import org.dobrochin.civilsociety.social.VKAuth;
 import org.dobrochin.civilsociety.views.DialogWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,6 +23,8 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	public static TextView res;
 	private EditText login;
 	private EditText password;
+	private Button vk_auth;
+	private Button facebook_auth;
 	private SocialNetworkDataParser socParser;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +39,9 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		res = (TextView)findViewById(R.id.result);
 		login = (EditText)findViewById(R.id.username);
 		password = (EditText)findViewById(R.id.password);
+		vk_auth = (Button)findViewById(R.id.vk_auth);
+		facebook_auth = (Button)findViewById(R.id.facebook_auth);
 		
-		socParser = new SocialNetworkDataParser(URL.SOCIAL_NETWORKS_LIST.VK);
-		DialogWebView dwv = new DialogWebView(this, socParser.getAuthRedirectUrl(), this);
-		dwv.setURL(socParser.getAuthUrl(this));
-		dwv.show();
 	}
 
 	@Override
@@ -111,10 +113,20 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	@Override
 	public void onAuthFinish(String authData) {
 		// TODO Auto-generated method stub
-		Intent intent = new Intent();
+		/*Intent intent = new Intent();
 		intent.putExtra(RequestService.REQUEST_TYPE, RequestService.REQUEST_GET_VK_PROFILE);
 		intent.putExtra(RequestService.SOCIAL_NETWORK_TOKEN, socParser.getAuthToken(authData));
-		sendRequest(intent);
+		sendRequest(intent);*/
 	}
-
+	public void socialAuth(View view)
+	{
+		SocialNetworkDataParser.SOCIAL_NETWORKS_LIST selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.VK;
+		if(view.equals(vk_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.VK;
+		else if(view.equals(facebook_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.FACEBOOK;
+		
+		socParser = new SocialNetworkDataParser(selectedSocial);
+		DialogWebView dwv = new DialogWebView(this, socParser.getAuthRedirectUrl(), this);
+		dwv.setURL(socParser.getAuthUrl(this));
+		dwv.show();
+	}
 }

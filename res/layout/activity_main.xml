@@ -21,8 +21,31 @@
       	android:inputType="textPassword"
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"/>
-    <ScrollView
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:orientation="horizontal"
         android:layout_below="@id/password"
+        android:id="@+id/social_panel"
+        >
+        <Button
+            android:id="@+id/vk_auth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="ВК"
+            android:onClick="socialAuth"
+            />
+        <Button
+            android:id="@+id/facebook_auth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="F"
+            android:onClick="socialAuth"
+            />
+    </LinearLayout>
+    <ScrollView
+        android:layout_below="@id/social_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
