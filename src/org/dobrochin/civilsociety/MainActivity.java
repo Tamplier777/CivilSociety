@@ -1,6 +1,10 @@
 package org.dobrochin.civilsociety;
 
 import org.dobrochin.civilsociety.requests.RequestService;
+import org.dobrochin.civilsociety.requests.URL;
+import org.dobrochin.civilsociety.social.SocialNetworkDataParser;
+import org.dobrochin.civilsociety.social.VKParser;
+import org.dobrochin.civilsociety.views.DialogWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,12 +15,13 @@ import android.view.Menu;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements DialogWebView.AuthFinishListener{
 	private static final String CACHE_LOGIN = "login";
 	private static final String CACHE_PASSWORD = "password";		
 	public static TextView res;
 	private EditText login;
 	private EditText password;
+	private SocialNetworkDataParser socParser;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,6 +35,11 @@ public class MainActivity extends BaseActivity {
 		res = (TextView)findViewById(R.id.result);
 		login = (EditText)findViewById(R.id.username);
 		password = (EditText)findViewById(R.id.password);
+		
+		socParser = new SocialNetworkDataParser(URL.SOCIAL_NETWORKS_LIST.VK);
+		DialogWebView dwv = new DialogWebView(this, socParser.getAuthRedirectUrl(), this);
+		dwv.setURL(socParser.getAuthUrl(this));
+		dwv.show();
 	}
 
 	@Override
@@ -41,7 +51,22 @@ public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onReceiveResponse(Intent intent) {
-		res.setText("" + intent.getStringExtra(RequestService.RESPONSE));
+		int requestType = intent.getIntExtra(RequestService.REQUEST_TYPE, -1);
+		switch(requestType)
+		{
+			case RequestService.REQUEST_GET_NEWS:
+				res.setText("" + intent.getStringExtra(RequestService.RESPONSE));
+				break;
+			case RequestService.REQUEST_GET_VK_PROFILE:
+				try {
+					socParser.setSNResponse(intent.getStringExtra(RequestService.RESPONSE));
+					login.setText(socParser.getName());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+		}
 	}
 	@Override
 	protected void onResume() {
@@ -81,6 +106,15 @@ public class MainActivity extends BaseActivity {
 			e.printStackTrace();
 		}
 		return cacheJson.toString();
+	}
+
+	@Override
+	public void onAuthFinish(String authData) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent();
+		intent.putExtra(RequestService.REQUEST_TYPE, RequestService.REQUEST_GET_VK_PROFILE);
+		intent.putExtra(RequestService.SOCIAL_NETWORK_TOKEN, socParser.getAuthToken(authData));
+		sendRequest(intent);
 	}
 
 }

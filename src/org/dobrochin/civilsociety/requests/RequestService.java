@@ -16,18 +16,21 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.dobrochin.civilsociety.R;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 public class RequestService extends IntentService{
-	private static final String BASE_URL = "http://apwsllc.com/prototypes/1/";
+	
 	public static final String BACK_ADDRESS = "back_address";
 	public static final String REQUEST_TYPE = "request_type";
 	public static final String RESPONSE = "response";
 	public static final String REQUEST_JSON = "request_json";
+	public static final String SOCIAL_NETWORK_TOKEN = "sn_token";
 	
 	//¬ запросе указываетс€, нужно ли спрашивать пользовател€ о повторной отправке запроса, если нет подключени€
 	public static final String NO_CONNECTION_ACTION = "no_connection_action";
@@ -44,6 +47,7 @@ public class RequestService extends IntentService{
 	
 	public static final int REQUEST_SEND_POST_PAIRS = 0;
 	public static final int REQUEST_GET_NEWS = 1;
+	public static final int REQUEST_GET_VK_PROFILE = 2;
 	
 	HttpClient httpClient;
 	public RequestService() {
@@ -67,26 +71,32 @@ public class RequestService extends IntentService{
 			switch(requestType)
 			{
 				case REQUEST_GET_NEWS:
-					response = getNews();
+					response = sendGetRequest(URL.BASE_URL + "s_list.json");
 					break;
 				case REQUEST_SEND_POST_PAIRS:
 					response = sendPostPairsRequest(intent.getStringExtra(REQUEST_JSON));
+					break;
+				case REQUEST_GET_VK_PROFILE:
+					String vkToken = intent.getStringExtra(SOCIAL_NETWORK_TOKEN);
+					response = sendGetRequest(URL.VK_GET_PROFILE_INFO.replace("$token", vkToken));
 					break;
 			}
 		}
 		catch(ClientProtocolException e){}
 		catch(IOException e){}
 		
-		sendAnswer(intent, response);
+		sendAnswer(intent, response, requestType);
 	}
-	private void sendAnswer(Intent intent, String response)
+	private void sendAnswer(Intent intent, String response, int requestType)
 	{
+		Log.i("wtf", response);
 		String action = intent.getStringExtra(BACK_ADDRESS);
 		if(response != null)
 		{
 			String errorDescription[] = new String[1];
 			int responseState = getResponseState(response, errorDescription);
-			if(responseState == STATE_OK) sendResponse(action, response, intent.getStringExtra(RequestQuerue.QUERY_ID));
+			Log.i("wtf", "" + responseState);
+			if(responseState == STATE_OK) sendResponse(action, response, intent.getStringExtra(RequestQuerue.QUERY_ID), requestType);
 			else sendRequestBack(intent, action, errorDescription[0], responseState);
 		}
 		else
@@ -100,23 +110,29 @@ public class RequestService extends IntentService{
 		int state = STATE_SERVER_CONNECTION_ERROR;
 		errorDescription[0] = getResources().getString(R.string.server_connection_error);
 		try {
-			JSONObject respJson = new JSONObject(response);
-			state = respJson.getString("status").equals("ok")? STATE_OK:STATE_REQUEST_ERROR;
+			Object respJson = null;
+			if(response.startsWith("{"))respJson = new JSONObject(response);
+			else if (response.startsWith("["))respJson = new JSONArray(response);
+			
+			if(respJson != null && !response.contains("error")) state = STATE_OK;
+			else if(respJson != null) errorDescription[0] = ((JSONObject)respJson).getString("error_description");
+			/*state = respJson.getString("status").equals("ok")? STATE_OK:STATE_REQUEST_ERROR;
 			if(state == STATE_REQUEST_ERROR)
 			{
 				errorDescription[0] = respJson.getString("error_description");
-			}
+			}*/
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return state;
 	}
-	private void sendResponse(String action, String response, String queryId)
+	private void sendResponse(String action, String response, String queryId, int requestType)
 	{
 		Intent intentResponse = new Intent();
 		intentResponse.setAction(action);
 		intentResponse.putExtra(RESPONSE_STATE, STATE_OK);
+		intentResponse.putExtra(REQUEST_TYPE, requestType);
 		if(queryId != null) intentResponse.putExtra(RequestQuerue.QUERY_ID, queryId);
 		intentResponse.putExtra(RESPONSE, response);
 		sendBroadcast(intentResponse);
@@ -130,18 +146,18 @@ public class RequestService extends IntentService{
 		intentResponse.putExtra(RESPONSE, errorDescription);
 		sendBroadcast(intentResponse);
 	}
-	private String getNews() throws ClientProtocolException, IOException
+	private String sendGetRequest(String url) throws ClientProtocolException, IOException
 	{
 		String responseString = null;
 		
 		HttpResponse response;
-		response = httpClient.execute(new HttpGet(BASE_URL + "s_list.json"));
+		response = httpClient.execute(new HttpGet(url));
 		HttpEntity httpEntity = response.getEntity();
 		responseString = EntityUtils.toString(httpEntity);
 		return responseString;
 	}
 	private String sendPostPairsRequest(String json) throws ClientProtocolException, IOException {
-	    HttpPost httppost = new HttpPost(BASE_URL + "m/q.php");
+	    HttpPost httppost = new HttpPost(URL.BASE_URL + "m/q.php");
 	    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 	    nameValuePairs.add(new BasicNameValuePair("p_json", json));
 	    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
