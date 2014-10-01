@@ -43,6 +43,13 @@
             android:text="F"
             android:onClick="socialAuth"
             />
+        <Button
+            android:id="@+id/google_auth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="g+"
+            android:onClick="socialAuth"
+            />
     </LinearLayout>
     <ScrollView
         android:layout_below="@id/social_panel"

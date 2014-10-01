@@ -3,8 +3,6 @@ package org.dobrochin.civilsociety.requests;
 public class URL {
 	public static final String BASE_URL = "http://apwsllc.com/prototypes/1/";
 	
-	public static final String FACEBOOK_AUTH_URL = "";
-	public static final String GOOGLEP_AUTH_URL = "";
 	public static final String TWITTER_AUTH_URL = "";
 	public static final String LINKEDLN_AUTH_URL = "";
 	public static final String MAILRU_AUTH_URL = "";

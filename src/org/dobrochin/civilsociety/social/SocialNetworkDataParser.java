@@ -12,11 +12,11 @@ public class SocialNetworkDataParser {
 	public enum SOCIAL_NETWORKS_LIST {VK, FACEBOOK, GOOGLEP, TWITTER, LINKEDLN, MAILRU, YANDEX, ODNOKLASSNIKI};
 	
 	private JSONObject profileData;
-	private SOCIAL_NETWORKS_LIST networkName;
 	private CurrentAuth currentParser;
+	private SOCIAL_NETWORKS_LIST currentNetwork;
 	public SocialNetworkDataParser(SOCIAL_NETWORKS_LIST network)
 	{
-		networkName = network;
+		currentNetwork = network;
 		switch(network)
 		{
 			case VK:
@@ -47,5 +47,9 @@ public class SocialNetworkDataParser {
 	public String getAuthToken(String authResponse)
 	{
 		return currentParser.getAuthToken(authResponse);
+	}
+	public String getProfileRequest(String token)
+	{
+		return currentParser.getProfileRequest(token);
 	}
 }

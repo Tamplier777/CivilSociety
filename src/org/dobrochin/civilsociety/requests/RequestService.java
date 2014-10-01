@@ -31,7 +31,7 @@ public class RequestService extends IntentService{
 	public static final String REQUEST_TYPE = "request_type";
 	public static final String RESPONSE = "response";
 	public static final String REQUEST_JSON = "request_json";
-	public static final String SOCIAL_NETWORK_TOKEN = "sn_token";
+	public static final String SOCIAL_NETWORK_GET_PROFILE_REQUEST = "sn_get_profile";
 	
 	//¬ запросе указываетс€, нужно ли спрашивать пользовател€ о повторной отправке запроса, если нет подключени€
 	public static final String NO_CONNECTION_ACTION = "no_connection_action";
@@ -48,7 +48,7 @@ public class RequestService extends IntentService{
 	
 	public static final int REQUEST_SEND_POST_PAIRS = 0;
 	public static final int REQUEST_GET_NEWS = 1;
-	public static final int REQUEST_GET_VK_PROFILE = 2;
+	public static final int REQUEST_GET_SOCIAL_PROFILE = 2;
 	
 	HttpClient httpClient;
 	public RequestService() {
@@ -77,9 +77,9 @@ public class RequestService extends IntentService{
 				case REQUEST_SEND_POST_PAIRS:
 					response = sendPostPairsRequest(intent.getStringExtra(REQUEST_JSON));
 					break;
-				case REQUEST_GET_VK_PROFILE:
-					String vkToken = intent.getStringExtra(SOCIAL_NETWORK_TOKEN);
-					response = sendGetRequest(VKAuth.VK_GET_PROFILE_INFO.replace("$token", vkToken));
+				case REQUEST_GET_SOCIAL_PROFILE:
+					String request = intent.getStringExtra(SOCIAL_NETWORK_GET_PROFILE_REQUEST);
+					response = sendGetRequest(request);
 					break;
 			}
 		}

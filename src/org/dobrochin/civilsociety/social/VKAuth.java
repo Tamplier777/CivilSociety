@@ -25,14 +25,14 @@ public class VKAuth implements CurrentAuth {
 			"display=mobile&"+ 
 			"v=$api_ver&"+
 			"response_type=token";
-	public static final String VK_GET_PROFILE_INFO = "https://api.vk.com/method/account.getProfileInfo?&access_token=$token";
+	public static final String VK_GET_PROFILE_INFO = "https://api.vk.com/method/account.getProfileInfo?&access_token=";
 	@Override
 	public String getName(JSONObject data) {
 		String fullName = null;
 		
 		try {
 			JSONObject profile = data.getJSONObject(WRAPPER);
-			fullName = profile.getString(FIRST_NAME) + profile.getString(LAST_NAME);
+			fullName = profile.getString(FIRST_NAME).concat(" ").concat(profile.getString(LAST_NAME));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,6 +61,11 @@ public class VKAuth implements CurrentAuth {
 			if(keyValuePairs[0].equals("access_token")) return keyValuePairs[1];
 		}
 		return null;
+	}
+	@Override
+	public String getProfileRequest(String token) {
+		// TODO Auto-generated method stub
+		return VK_GET_PROFILE_INFO.concat(token);
 	}
 
 }

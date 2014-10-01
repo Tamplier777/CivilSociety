@@ -1,18 +1,36 @@
 package org.dobrochin.civilsociety.social;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FacebookAuth implements CurrentAuth {
+	private static final String RESPONSE_FIELD_FIRST_NAME = "first_name";
+	private static final String RESPONSE_FIELD_GENDER = "gender";
+	private static final String RESPONSE_FIELD_LAST_NAME = "last_name";
+	private static final String RESPONSE_FIELD_FULL_NAME = "name";
+	private static final String RESPONSE_FIELD_LOCATION = "location";
+	private static final String RESPONSE_FIELD_HOMETOWN = "hometown";
+	private static final String RESPONSE_FIELD_BIRTHDAY = "birthday";
 	private static final String FACEBOOK_AUTH_URL = "https://www.facebook.com/dialog/oauth?" +
 			"client_id=$client_id&" +
 			"redirect_uri=$redirect_url&" +
-			"response_type=token";
+			"display=touch&" +
+			"response_type=token&" +
+			"scope=public_profile,user_birthday,user_location,user_hometown";
 	private static final String redirectedUrl = "https://www.facebook.com/connect/login_success.html";
+	private static final String getProfileUrl = "https://graph.facebook.com/v2.1/me?access_token=";
 	private static final String app_id = "680852062011488";
 	@Override
 	public String getName(JSONObject data) {
-		// TODO Auto-generated method stub
-		return null;
+		String fullName = null;
+		
+		try {
+			fullName = data.getString(RESPONSE_FIELD_FULL_NAME);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return fullName;
 	}
 
 	@Override
@@ -38,6 +56,12 @@ public class FacebookAuth implements CurrentAuth {
 			if(keyValuePairs[0].equals("access_token")) return keyValuePairs[1];
 		}
 		return null;
+	}
+
+	@Override
+	public String getProfileRequest(String token) {
+		// TODO Auto-generated method stub
+		return getProfileUrl.concat(token);
 	}
 
 }

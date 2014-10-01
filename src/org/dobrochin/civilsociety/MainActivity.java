@@ -8,6 +8,8 @@ import org.dobrochin.civilsociety.views.DialogWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.common.AccountPicker;
+
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
@@ -25,6 +27,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	private EditText password;
 	private Button vk_auth;
 	private Button facebook_auth;
+	private Button google_auth;
 	private SocialNetworkDataParser socParser;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		password = (EditText)findViewById(R.id.password);
 		vk_auth = (Button)findViewById(R.id.vk_auth);
 		facebook_auth = (Button)findViewById(R.id.facebook_auth);
-		
+		google_auth = (Button)findViewById(R.id.google_auth);
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 			case RequestService.REQUEST_GET_NEWS:
 				res.setText("" + intent.getStringExtra(RequestService.RESPONSE));
 				break;
-			case RequestService.REQUEST_GET_VK_PROFILE:
+			case RequestService.REQUEST_GET_SOCIAL_PROFILE:
 				try {
 					socParser.setSNResponse(intent.getStringExtra(RequestService.RESPONSE));
 					login.setText(socParser.getName());
@@ -113,16 +116,24 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	@Override
 	public void onAuthFinish(String authData) {
 		// TODO Auto-generated method stub
-		/*Intent intent = new Intent();
-		intent.putExtra(RequestService.REQUEST_TYPE, RequestService.REQUEST_GET_VK_PROFILE);
-		intent.putExtra(RequestService.SOCIAL_NETWORK_TOKEN, socParser.getAuthToken(authData));
-		sendRequest(intent);*/
+		Intent intent = new Intent();
+		intent.putExtra(RequestService.REQUEST_TYPE, RequestService.REQUEST_GET_SOCIAL_PROFILE);
+		String getProfileRequest = socParser.getProfileRequest(socParser.getAuthToken(authData));
+		intent.putExtra(RequestService.SOCIAL_NETWORK_GET_PROFILE_REQUEST, getProfileRequest);
+		sendRequest(intent);
 	}
 	public void socialAuth(View view)
 	{
 		SocialNetworkDataParser.SOCIAL_NETWORKS_LIST selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.VK;
 		if(view.equals(vk_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.VK;
 		else if(view.equals(facebook_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.FACEBOOK;
+		else if(view.equals(google_auth))
+		{
+			Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+                    false, null, null, null, null);
+            startActivityForResult(intent, 123);
+			return;
+		}		
 		
 		socParser = new SocialNetworkDataParser(selectedSocial);
 		DialogWebView dwv = new DialogWebView(this, socParser.getAuthRedirectUrl(), this);
