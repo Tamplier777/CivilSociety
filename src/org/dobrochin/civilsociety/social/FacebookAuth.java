@@ -3,7 +3,7 @@ package org.dobrochin.civilsociety.social;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FacebookAuth implements CurrentAuth {
+public class FacebookAuth extends CurrentAuth {
 	private static final String RESPONSE_FIELD_FIRST_NAME = "first_name";
 	private static final String RESPONSE_FIELD_GENDER = "gender";
 	private static final String RESPONSE_FIELD_LAST_NAME = "last_name";
@@ -34,20 +34,20 @@ public class FacebookAuth implements CurrentAuth {
 	}
 
 	@Override
-	public String getAuthURL() {
+	protected String getAuthURL() {
 		// TODO Auto-generated method stub
 		String url = FACEBOOK_AUTH_URL.replace("$client_id", app_id).replace("$redirect_url", redirectedUrl);
 		return url;
 	}
 
 	@Override
-	public String getRedirectURL() {
+	protected String getRedirectURL() {
 		// TODO Auto-generated method stub
 		return redirectedUrl;
 	}
 
 	@Override
-	public String getAuthToken(String authResponse) {
+	protected String getAuthToken(String authResponse) {
 		String authPart = authResponse.split("#")[1];
 		String authParams[] = authPart.split("&");
 		for(int i=0; i < authParams.length; i++)
@@ -59,7 +59,7 @@ public class FacebookAuth implements CurrentAuth {
 	}
 
 	@Override
-	public String getProfileRequest(String token) {
+	protected String getProfileRequest(String token) {
 		// TODO Auto-generated method stub
 		return getProfileUrl.concat(token);
 	}

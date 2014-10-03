@@ -1,13 +1,9 @@
 package org.dobrochin.civilsociety.social;
 
-import org.dobrochin.civilsociety.R;
-import org.dobrochin.civilsociety.requests.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-
-public class VKAuth implements CurrentAuth {
+public class VKAuth extends CurrentAuth {
 	private static final String WRAPPER = "response";
 	private static final String FIRST_NAME = "first_name";
 	private static final String LAST_NAME = "last_name";
@@ -40,7 +36,7 @@ public class VKAuth implements CurrentAuth {
 		return fullName;
 	}
 	@Override
-	public String getAuthURL() {
+	protected String getAuthURL() {
 		String url = VK_AUTH_URL;
 		url = url.replace("$app_id", String.valueOf(app_id))
 				.replace("$api_ver", api_version)
@@ -48,11 +44,11 @@ public class VKAuth implements CurrentAuth {
 		return url;
 	}
 	@Override
-	public String getRedirectURL() {
+	protected String getRedirectURL() {
 		return auth_redirect;
 	}
 	@Override
-	public String getAuthToken(String authResponse) {
+	protected String getAuthToken(String authResponse) {
 		String authPart = authResponse.split("#")[1];
 		String authParams[] = authPart.split("&");
 		for(int i=0; i < authParams.length; i++)
@@ -63,7 +59,7 @@ public class VKAuth implements CurrentAuth {
 		return null;
 	}
 	@Override
-	public String getProfileRequest(String token) {
+	protected String getProfileRequest(String token) {
 		// TODO Auto-generated method stub
 		return VK_GET_PROFILE_INFO.concat(token);
 	}

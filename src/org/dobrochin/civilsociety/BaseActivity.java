@@ -91,6 +91,7 @@ public abstract class BaseActivity extends Activity {
 		if(!receiverRegistered)
 		{
 			registerReceiver(receiver, intFilt);
+			receiverRegistered = true;
 		}
 		checkCache();
 	}
@@ -101,6 +102,7 @@ public abstract class BaseActivity extends Activity {
 		if(receiverRegistered && (needToUnregisterReceiver || isFinishing()))
 		{
 			unregisterReceiver(receiver);
+			receiverRegistered = false;
 		}
 		saveCache();
 	}
@@ -154,5 +156,9 @@ public abstract class BaseActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+	}
+	public String getActivityName()
+	{
+		return activityName;
 	}
 }

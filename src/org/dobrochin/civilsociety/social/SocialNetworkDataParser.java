@@ -1,10 +1,11 @@
 package org.dobrochin.civilsociety.social;
 
-import org.dobrochin.civilsociety.requests.URL;
+import org.dobrochin.civilsociety.BaseActivity;
+import org.dobrochin.civilsociety.views.DialogWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
+import android.app.Activity;
 
 public class SocialNetworkDataParser {
 	
@@ -24,9 +25,21 @@ public class SocialNetworkDataParser {
 				break;
 			case FACEBOOK:
 				currentParser = new FacebookAuth();
+				break;
+			case GOOGLEP:
+				currentParser = new GooglePAuth();
+				break;
 			default:
 				break;
 		}
+	}
+	public void showAuthDialog(BaseActivity activity, DialogWebView.AuthFinishListener listener)
+	{
+		currentParser.showAuthDialog(activity, listener);
+	}
+	public void sendGetProfileRequest(BaseActivity activity, String authData)
+	{
+		currentParser.sendGetProfileRequest(activity, authData);
 	}
 	public void setSNResponse(String response) throws JSONException
 	{
@@ -35,21 +48,5 @@ public class SocialNetworkDataParser {
 	public String getName()
 	{
 		return currentParser.getName(profileData);
-	}
-	public String getAuthUrl(Context context)
-	{
-		return currentParser.getAuthURL();
-	}
-	public String getAuthRedirectUrl()
-	{
-		return currentParser.getRedirectURL();
-	}
-	public String getAuthToken(String authResponse)
-	{
-		return currentParser.getAuthToken(authResponse);
-	}
-	public String getProfileRequest(String token)
-	{
-		return currentParser.getProfileRequest(token);
 	}
 }

@@ -90,13 +90,11 @@ public class RequestService extends IntentService{
 	}
 	private void sendAnswer(Intent intent, String response, int requestType)
 	{
-		Log.i("wtf", response);
 		String action = intent.getStringExtra(BACK_ADDRESS);
 		if(response != null)
 		{
 			String errorDescription[] = new String[1];
 			int responseState = getResponseState(response, errorDescription);
-			Log.i("wtf", "" + responseState);
 			if(responseState == STATE_OK) sendResponse(action, response, intent.getStringExtra(RequestQuerue.QUERY_ID), requestType);
 			else sendRequestBack(intent, action, errorDescription[0], responseState);
 		}

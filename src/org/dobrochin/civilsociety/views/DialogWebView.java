@@ -1,12 +1,9 @@
 package org.dobrochin.civilsociety.views;
 
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
@@ -26,17 +23,24 @@ public class DialogWebView extends Dialog{
 	}
 	private void init(Context context, final String resultUrl)
 	{
+		
 		RelativeLayout rl = new RelativeLayout(context);
 		mainView = new WebView(context);
 		progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleLarge);
 		rl.addView(mainView);
 		rl.addView(progressBar);
-		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressBar.getLayoutParams();
-		lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-		progressBar.setLayoutParams(lp);
+		RelativeLayout.LayoutParams lppb = (RelativeLayout.LayoutParams) progressBar.getLayoutParams();
+		lppb.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+		progressBar.setLayoutParams(lppb);
+		
+		RelativeLayout.LayoutParams lpwv = (RelativeLayout.LayoutParams) mainView.getLayoutParams();
+		lpwv.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+		lpwv.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+		lpwv.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+		mainView.setLayoutParams(lpwv);
 		
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		mainView.setVisibility(View.GONE);
+		mainView.setVisibility(View.INVISIBLE);
 		
 		mainView.getSettings().setJavaScriptEnabled(true);
 		mainView.clearCache(true);
@@ -45,7 +49,7 @@ public class DialogWebView extends Dialog{
 		    public boolean shouldOverrideUrlLoading(WebView view, String url){
 		        // do your handling codes here, which url is the requested url
 		        // probably you need to open that url rather than redirect:
-		    	if(url.contains(resultUrl))
+		    	if(url.startsWith(resultUrl))
 		    	{
 		    		finishListener.onAuthFinish(url);
 		    		DialogWebView.this.dismiss();
@@ -57,13 +61,13 @@ public class DialogWebView extends Dialog{
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
 				mainView.setVisibility(View.VISIBLE);
-				progressBar.setVisibility(View.GONE);
+				progressBar.setVisibility(View.INVISIBLE);
 			}
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				progressBar.setVisibility(View.VISIBLE);
-				mainView.setVisibility(View.GONE);
+				mainView.setVisibility(View.INVISIBLE);
 			}
 		});
 		setContentView(rl);
