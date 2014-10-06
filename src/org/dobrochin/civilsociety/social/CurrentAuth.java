@@ -25,7 +25,7 @@ public abstract class CurrentAuth {
 		Intent intent = new Intent();
 		intent.putExtra(RequestService.REQUEST_TYPE, RequestService.REQUEST_GET_SOCIAL_PROFILE);
 		String getProfileRequest = getProfileRequest(getAuthToken(authData));
-		intent.putExtra(RequestService.SOCIAL_NETWORK_GET_PROFILE_REQUEST, getProfileRequest);
+		intent.putExtra(RequestService.SOCIAL_NETWORK_URL, getProfileRequest);
 		activity.sendRequest(intent);
 	}
 }

@@ -1,19 +1,14 @@
 package org.dobrochin.civilsociety;
 
 import org.dobrochin.civilsociety.requests.RequestService;
-import org.dobrochin.civilsociety.requests.URL;
 import org.dobrochin.civilsociety.social.GooglePAuth;
 import org.dobrochin.civilsociety.social.SocialNetworkDataParser;
-import org.dobrochin.civilsociety.social.VKAuth;
 import org.dobrochin.civilsociety.views.DialogWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.gms.common.AccountPicker;
-
 import android.os.Bundle;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +23,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	private EditText password;
 	private Button vk_auth;
 	private Button facebook_auth;
+	private Button twitter_auth;
 	private com.google.android.gms.common.SignInButton google_auth;
 	private SocialNetworkDataParser socParser;
 	@Override
@@ -47,6 +43,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		facebook_auth = (Button)findViewById(R.id.facebook_auth);
 		google_auth = (com.google.android.gms.common.SignInButton)findViewById(R.id.google_auth);
 		google_auth.setOnClickListener(this);
+		twitter_auth = (Button)findViewById(R.id.twitter_auth);
 	}
 
 	@Override
@@ -127,6 +124,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		if(view.equals(vk_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.VK;
 		else if(view.equals(facebook_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.FACEBOOK;
 		else if(view.equals(google_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.GOOGLEP; 		
+		else if(view.equals(twitter_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.TWITTER;
 		
 		socParser = new SocialNetworkDataParser(selectedSocial);
 		socParser.showAuthDialog(this, this);

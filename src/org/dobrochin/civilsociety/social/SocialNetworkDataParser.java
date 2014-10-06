@@ -29,6 +29,9 @@ public class SocialNetworkDataParser {
 			case GOOGLEP:
 				currentParser = new GooglePAuth();
 				break;
+			case TWITTER:
+				currentParser = new TwitterAuth();
+				break;
 			default:
 				break;
 		}

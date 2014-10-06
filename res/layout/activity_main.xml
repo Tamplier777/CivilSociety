@@ -49,6 +49,13 @@
     		android:layout_height="wrap_content"
             android:onClick="onClick"
             />
+        <Button
+            android:id="@+id/twitter_auth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="tw"
+            android:onClick="onClick"
+            />
     </LinearLayout>
     <ScrollView
         android:layout_below="@id/social_panel"

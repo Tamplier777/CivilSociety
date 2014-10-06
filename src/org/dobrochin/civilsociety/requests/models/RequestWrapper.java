@@ -1,11 +1,18 @@
 package org.dobrochin.civilsociety.requests.models;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Base64;
 
 import com.google.gson.Gson;
 
@@ -40,5 +47,17 @@ public class RequestWrapper {
 	        e.printStackTrace();
 	    }
 	    return "";
+	}
+	public static String sha1(String msg, String keyString) throws 
+	UnsupportedEncodingException, NoSuchAlgorithmException, 
+	InvalidKeyException
+	{
+		SecretKeySpec key = new SecretKeySpec((keyString).getBytes("UTF-8"), "HmacSHA1");
+		Mac mac = Mac.getInstance("HmacSHA1");
+		mac.init(key);
+			
+		byte[] bytes = mac.doFinal(msg.getBytes("UTF-8"));
+		
+		return new String( Base64.encodeToString(bytes, Base64.NO_WRAP) );
 	}
 }

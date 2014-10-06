@@ -2,6 +2,7 @@ package org.dobrochin.civilsociety.requests;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -31,7 +32,8 @@ public class RequestService extends IntentService{
 	public static final String REQUEST_TYPE = "request_type";
 	public static final String RESPONSE = "response";
 	public static final String REQUEST_JSON = "request_json";
-	public static final String SOCIAL_NETWORK_GET_PROFILE_REQUEST = "sn_get_profile";
+	public static final String REQUEST_JSON_POST = "request_json_post";
+	public static final String SOCIAL_NETWORK_URL = "sn_get_profile";
 	
 	//¬ запросе указываетс€, нужно ли спрашивать пользовател€ о повторной отправке запроса, если нет подключени€
 	public static final String NO_CONNECTION_ACTION = "no_connection_action";
@@ -49,6 +51,7 @@ public class RequestService extends IntentService{
 	public static final int REQUEST_SEND_POST_PAIRS = 0;
 	public static final int REQUEST_GET_NEWS = 1;
 	public static final int REQUEST_GET_SOCIAL_PROFILE = 2;
+	public static final int REQUEST_GET_REQUEST_TOKEN = 3;
 	
 	HttpClient httpClient;
 	public RequestService() {
@@ -75,11 +78,23 @@ public class RequestService extends IntentService{
 					response = sendGetRequest(URL.BASE_URL + "s_list.json");
 					break;
 				case REQUEST_SEND_POST_PAIRS:
-					response = sendPostPairsRequest(intent.getStringExtra(REQUEST_JSON));
+					List<NameValuePair> stdNVP = formStandartServerPostPairs(intent.getStringExtra(REQUEST_JSON));
+					response = sendPostPairsRequest(URL.BASE_URL + "m/q.php", stdNVP);
 					break;
 				case REQUEST_GET_SOCIAL_PROFILE:
-					String request = intent.getStringExtra(SOCIAL_NETWORK_GET_PROFILE_REQUEST);
+					String request = intent.getStringExtra(SOCIAL_NETWORK_URL);
 					response = sendGetRequest(request);
+					break;
+				case REQUEST_GET_REQUEST_TOKEN:
+					String preAuthUrl = intent.getStringExtra(SOCIAL_NETWORK_URL);
+					String postPreAuth = intent.getStringExtra(REQUEST_JSON_POST);
+					if(postPreAuth != null)
+					{
+						Log.i("wtf", postPreAuth);
+						response = sendPostPairsRequest(preAuthUrl, formPairsFromJson(postPreAuth));
+						Log.i("wtf", response);
+					}
+					else response = sendGetRequest(preAuthUrl);
 					break;
 			}
 		}
@@ -155,10 +170,33 @@ public class RequestService extends IntentService{
 		responseString = EntityUtils.toString(httpEntity);
 		return responseString;
 	}
-	private String sendPostPairsRequest(String json) throws ClientProtocolException, IOException {
-	    HttpPost httppost = new HttpPost(URL.BASE_URL + "m/q.php");
-	    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	private List<NameValuePair> formPairsFromJson(String json)
+	{
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		JSONObject jsonObj;
+		try {
+			jsonObj = new JSONObject(json);
+			Iterator<String> iter = jsonObj.keys();
+			while(iter.hasNext())
+			{
+				String key = iter.next();
+				nameValuePairs.add(new BasicNameValuePair(key, jsonObj.getString(key)));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nameValuePairs;
+	}
+	private List<NameValuePair> formStandartServerPostPairs(String json)
+	{
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 	    nameValuePairs.add(new BasicNameValuePair("p_json", json));
+	    return nameValuePairs;
+	}
+	private String sendPostPairsRequest(String url, List<NameValuePair> nameValuePairs) throws ClientProtocolException, IOException {
+	    HttpPost httppost = new HttpPost(url);
+	    
 	    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 	    HttpResponse response = httpClient.execute(httppost);
 	    HttpEntity httpEntity = response.getEntity();
