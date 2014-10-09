@@ -51,7 +51,7 @@ public class RequestService extends IntentService{
 	public static final int REQUEST_SEND_POST_PAIRS = 0;
 	public static final int REQUEST_GET_NEWS = 1;
 	public static final int REQUEST_GET_SOCIAL_PROFILE = 2;
-	public static final int REQUEST_GET_REQUEST_TOKEN = 3;
+	public static final int REQUEST_GET_ADITIONAL_SN_INFORMATION = 3; //За доп информацией для соц. сетей отсылаем такой запрос. 
 	
 	HttpClient httpClient;
 	public RequestService() {
@@ -83,16 +83,20 @@ public class RequestService extends IntentService{
 					break;
 				case REQUEST_GET_SOCIAL_PROFILE:
 					String request = intent.getStringExtra(SOCIAL_NETWORK_URL);
-					response = sendGetRequest(request);
+					String post = intent.getStringExtra(REQUEST_JSON_POST);
+					if(post != null)
+					{
+						response = sendPostPairsRequest(request, formPairsFromJson(post));
+					}
+					else response = sendGetRequest(request);
 					break;
-				case REQUEST_GET_REQUEST_TOKEN:
+				case REQUEST_GET_ADITIONAL_SN_INFORMATION:
 					String preAuthUrl = intent.getStringExtra(SOCIAL_NETWORK_URL);
 					String postPreAuth = intent.getStringExtra(REQUEST_JSON_POST);
 					if(postPreAuth != null)
 					{
-						Log.i("wtf", postPreAuth);
 						response = sendPostPairsRequest(preAuthUrl, formPairsFromJson(postPreAuth));
-						Log.i("wtf", response);
+						response = transformURLParamsToJson(response);
 					}
 					else response = sendGetRequest(preAuthUrl);
 					break;
@@ -201,5 +205,23 @@ public class RequestService extends IntentService{
 	    HttpResponse response = httpClient.execute(httppost);
 	    HttpEntity httpEntity = response.getEntity();
 		return EntityUtils.toString(httpEntity);
+	}
+	private String transformURLParamsToJson(String urlParams)
+	{
+		String nameValue[] = urlParams.split("&");
+		JSONObject urlJson = new JSONObject();
+		for(int i=0; i < nameValue.length; i++)
+		{
+			String params[] = nameValue[i].split("=");
+			try {
+				if(params.length > 1) urlJson.put(params[0], params[1]);
+				else if(params.length > 0) urlJson.put("error", params[0]);
+				else urlJson.put("error", "");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return urlJson.toString();
 	}
 }

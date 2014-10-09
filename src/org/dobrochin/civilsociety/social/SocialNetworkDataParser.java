@@ -1,13 +1,16 @@
 package org.dobrochin.civilsociety.social;
 
 import org.dobrochin.civilsociety.BaseActivity;
+import org.dobrochin.civilsociety.BaseActivity.OnRequestFailedListener;
+import org.dobrochin.civilsociety.requests.RequestService;
 import org.dobrochin.civilsociety.views.DialogWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 
-public class SocialNetworkDataParser {
+public class SocialNetworkDataParser implements OnRequestFailedListener{
 	
 	//Социальные сети:
 	public enum SOCIAL_NETWORKS_LIST {VK, FACEBOOK, GOOGLEP, TWITTER, LINKEDLN, MAILRU, YANDEX, ODNOKLASSNIKI};
@@ -15,22 +18,22 @@ public class SocialNetworkDataParser {
 	private JSONObject profileData;
 	private CurrentAuth currentParser;
 	private SOCIAL_NETWORKS_LIST currentNetwork;
-	public SocialNetworkDataParser(SOCIAL_NETWORKS_LIST network)
+	public SocialNetworkDataParser(Context context, SOCIAL_NETWORKS_LIST network)
 	{
 		currentNetwork = network;
 		switch(network)
 		{
 			case VK:
-				currentParser = new VKAuth();
+				currentParser = new VKAuth(context);
 				break;
 			case FACEBOOK:
-				currentParser = new FacebookAuth();
+				currentParser = new FacebookAuth(context);
 				break;
 			case GOOGLEP:
-				currentParser = new GooglePAuth();
+				currentParser = new GooglePAuth(context);
 				break;
 			case TWITTER:
-				currentParser = new TwitterAuth();
+				currentParser = new TwitterAuth(context);
 				break;
 			default:
 				break;
@@ -51,5 +54,14 @@ public class SocialNetworkDataParser {
 	public String getName()
 	{
 		return currentParser.getName(profileData);
+	}
+	public void setAdditionalParameters(String params)
+	{
+		currentParser.setAdditionalParameters(params);
+	}
+	@Override
+	public void onRequestFailed(int requestType) {
+		// TODO Auto-generated method stub
+		if(requestType == RequestService.REQUEST_GET_ADITIONAL_SN_INFORMATION) currentParser.hideWaitDialog();
 	}
 }

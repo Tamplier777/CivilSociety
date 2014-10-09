@@ -1,6 +1,9 @@
 package org.dobrochin.civilsociety.views;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +18,8 @@ public class DialogWebView extends Dialog{
 	private WebView mainView;
 	private ProgressBar progressBar;
 	private AuthFinishListener finishListener;
+	private String fakeUserAgent = "something";
+	private String realUserAgent;
 	public DialogWebView(Context context, String resultUrl, AuthFinishListener authFinishListener) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -41,9 +46,9 @@ public class DialogWebView extends Dialog{
 		
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mainView.setVisibility(View.INVISIBLE);
-		
+		realUserAgent = mainView.getSettings().getUserAgentString();	
 		mainView.getSettings().setJavaScriptEnabled(true);
-		mainView.clearCache(true);
+		//mainView.clearCache(true);
 		mainView.setWebViewClient(new WebViewClient() {
 			@Override
 		    public boolean shouldOverrideUrlLoading(WebView view, String url){
@@ -54,7 +59,10 @@ public class DialogWebView extends Dialog{
 		    		finishListener.onAuthFinish(url);
 		    		DialogWebView.this.dismiss();
 		    	}
-		    	else view.loadUrl(url);
+		    	else
+		    	{
+		    		view.loadUrl(url);
+		    	}
 		        return false; // then it is not handled by default action
 		   }
 			@Override
@@ -72,8 +80,10 @@ public class DialogWebView extends Dialog{
 		});
 		setContentView(rl);
 	}
-	public void setURL(String url)
+	public void setURL(String url, boolean needFakeUserAgent)
 	{
+		if(needFakeUserAgent) mainView.getSettings().setUserAgentString(fakeUserAgent);
+		else mainView.getSettings().setUserAgentString(realUserAgent);
 		mainView.loadUrl(url);
 	}
 	public void setHtml(String text)

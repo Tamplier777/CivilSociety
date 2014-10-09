@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -56,19 +57,23 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	@Override
 	protected void onReceiveResponse(Intent intent) {
 		int requestType = intent.getIntExtra(RequestService.REQUEST_TYPE, -1);
+		String response = intent.getStringExtra(RequestService.RESPONSE);
 		switch(requestType)
 		{
 			case RequestService.REQUEST_GET_NEWS:
-				res.setText("" + intent.getStringExtra(RequestService.RESPONSE));
+				res.setText("" + response);
 				break;
 			case RequestService.REQUEST_GET_SOCIAL_PROFILE:
 				try {
-					socParser.setSNResponse(intent.getStringExtra(RequestService.RESPONSE));
+					socParser.setSNResponse(response);
 					login.setText(socParser.getName());
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				break;
+			case RequestService.REQUEST_GET_ADITIONAL_SN_INFORMATION:
+				socParser.setAdditionalParameters(response);
 				break;
 		}
 	}
@@ -126,7 +131,8 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		else if(view.equals(google_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.GOOGLEP; 		
 		else if(view.equals(twitter_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.TWITTER;
 		
-		socParser = new SocialNetworkDataParser(selectedSocial);
+		socParser = new SocialNetworkDataParser(this, selectedSocial);
+		this.setOnRequestFailedListener(socParser);
 		socParser.showAuthDialog(this, this);
 	}
 	@Override

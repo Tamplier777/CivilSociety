@@ -3,7 +3,13 @@ package org.dobrochin.civilsociety.social;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+
 public class VKAuth extends CurrentAuth {
+	public VKAuth(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
 	private static final String WRAPPER = "response";
 	private static final String FIRST_NAME = "first_name";
 	private static final String LAST_NAME = "last_name";
@@ -49,14 +55,7 @@ public class VKAuth extends CurrentAuth {
 	}
 	@Override
 	protected String getAuthToken(String authResponse) {
-		String authPart = authResponse.split("#")[1];
-		String authParams[] = authPart.split("&");
-		for(int i=0; i < authParams.length; i++)
-		{
-			String keyValuePairs[] = authParams[i].split("=");
-			if(keyValuePairs[0].equals("access_token")) return keyValuePairs[1];
-		}
-		return null;
+		return getURLQueryParameter(authResponse, "access_token");
 	}
 	@Override
 	protected String getProfileRequest(String token) {

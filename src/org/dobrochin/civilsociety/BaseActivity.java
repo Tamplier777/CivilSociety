@@ -33,6 +33,7 @@ public abstract class BaseActivity extends Activity {
 	private BroadcastReceiver receiver;
 	private boolean receiverRegistered;
 	private boolean needToUnregisterReceiver;
+	private OnRequestFailedListener rfListener;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -47,6 +48,7 @@ public abstract class BaseActivity extends Activity {
 					//Если получили ошибку от сервера, стандартные действия - 
 					//показать диалог или сохранить запрос в очереди
 					int action = intent.getIntExtra(RequestService.NO_CONNECTION_ACTION, RequestService.ACTION_SHOW_ALERT_DIALOG);
+					if(rfListener != null) rfListener.onRequestFailed(intent.getIntExtra(RequestService.REQUEST_TYPE, -1));
 					switch(action)
 					{
 						case RequestService.ACTION_SAVE_WITHOUT_DIALOG:
@@ -160,5 +162,14 @@ public abstract class BaseActivity extends Activity {
 	public String getActivityName()
 	{
 		return activityName;
+	}
+	public void setOnRequestFailedListener(OnRequestFailedListener listener)
+	{
+		rfListener = listener;
+	}
+	
+	public interface OnRequestFailedListener
+	{
+		public void onRequestFailed(int requestType);
 	}
 }

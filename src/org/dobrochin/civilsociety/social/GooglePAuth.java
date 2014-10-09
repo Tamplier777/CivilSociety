@@ -21,7 +21,7 @@ import com.google.android.gms.plus.PlusClient.OnPeopleLoadedListener;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
 
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.os.AsyncTask;
@@ -29,10 +29,14 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class GooglePAuth extends CurrentAuth implements ConnectionCallbacks, OnConnectionFailedListener, OnPeopleLoadedListener{
+	public GooglePAuth(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
+
 	private PlusClient mPlusClient;
 	private BaseActivity activity;
 	private AuthFinishListener listener;
-	private ProgressDialog mConnectionProgressDialog;
 	public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
 	@Override
 	public String getName(JSONObject data) {
@@ -64,11 +68,9 @@ public class GooglePAuth extends CurrentAuth implements ConnectionCallbacks, OnC
 			.setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
 			.setScopes(Scopes.PLUS_LOGIN, Scopes.PLUS_ME)
 	        .build();
-			mConnectionProgressDialog = new ProgressDialog(activity);
-	        mConnectionProgressDialog.setMessage("Пробуем подключиться...");
 		}
         mPlusClient.connect();
-        mConnectionProgressDialog.show();
+        showWaitDialog();
 	}
 	@Override
 	public void sendGetProfileRequest(final BaseActivity activity, final String authData) {
@@ -82,7 +84,7 @@ public class GooglePAuth extends CurrentAuth implements ConnectionCallbacks, OnC
 		if (result.hasResolution()) {
             try {
                 result.startResolutionForResult(activity, REQUEST_CODE_RESOLVE_ERR);
-                mConnectionProgressDialog.dismiss();
+                hideWaitDialog();
             } catch (SendIntentException e) {
             	e.printStackTrace();
                 mPlusClient.connect();
@@ -90,7 +92,7 @@ public class GooglePAuth extends CurrentAuth implements ConnectionCallbacks, OnC
         }
 		else
 		{
-			mConnectionProgressDialog.dismiss();
+			hideWaitDialog();
 			Toast.makeText(activity, "Подключение не удалось", Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -126,7 +128,7 @@ public class GooglePAuth extends CurrentAuth implements ConnectionCallbacks, OnC
 			protected void onPostExecute(String result) {
 				// TODO Auto-generated method stub
 				super.onPostExecute(result);
-				mConnectionProgressDialog.dismiss();
+				hideWaitDialog();
 				listener.onAuthFinish(result);
 			}
 		};

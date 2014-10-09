@@ -12,6 +12,7 @@ public class PostTwitterData {
 	//does not required in some requests
 	private String oauth_callback;
 	private String oauth_token;
+	private String oauth_verifier;
 	public PostTwitterData(String oauthNotice, String oauthConsumerKey) {
 		setOauth_nonce(oauthNotice);
 		setOauth_consumer_key(oauthConsumerKey);
@@ -66,5 +67,11 @@ public class PostTwitterData {
 	}
 	public void setOauth_signature(String oauth_signature) {
 		this.oauth_signature = oauth_signature;
+	}
+	public String getOauth_verifier() {
+		return oauth_verifier;
+	}
+	public void setOauth_verifier(String oauth_verifier) {
+		this.oauth_verifier = oauth_verifier;
 	}
 }
