@@ -25,6 +25,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 	private Button vk_auth;
 	private Button facebook_auth;
 	private Button twitter_auth;
+	private Button odnoklassniki_auth;
 	private com.google.android.gms.common.SignInButton google_auth;
 	private SocialNetworkDataParser socParser;
 	@Override
@@ -45,6 +46,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		google_auth = (com.google.android.gms.common.SignInButton)findViewById(R.id.google_auth);
 		google_auth.setOnClickListener(this);
 		twitter_auth = (Button)findViewById(R.id.twitter_auth);
+		odnoklassniki_auth = (Button)findViewById(R.id.odnoklassniki_auth);
 	}
 
 	@Override
@@ -130,6 +132,7 @@ public class MainActivity extends BaseActivity implements DialogWebView.AuthFini
 		else if(view.equals(facebook_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.FACEBOOK;
 		else if(view.equals(google_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.GOOGLEP; 		
 		else if(view.equals(twitter_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.TWITTER;
+		else if(view.equals(odnoklassniki_auth)) selectedSocial = SocialNetworkDataParser.SOCIAL_NETWORKS_LIST.ODNOKLASSNIKI;
 		
 		socParser = new SocialNetworkDataParser(this, selectedSocial);
 		this.setOnRequestFailedListener(socParser);

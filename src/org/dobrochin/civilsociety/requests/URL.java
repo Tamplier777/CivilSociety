@@ -6,5 +6,4 @@ public class URL {
 	public static final String LINKEDLN_AUTH_URL = "";
 	public static final String MAILRU_AUTH_URL = "";
 	public static final String YANDEX_AUTH_URL = "";
-	public static final String ODNOKLASSNIKI_AUTH_URL = "";
 }

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 public class SocialNetworkDataParser implements OnRequestFailedListener{
 	
@@ -35,6 +36,8 @@ public class SocialNetworkDataParser implements OnRequestFailedListener{
 			case TWITTER:
 				currentParser = new TwitterAuth(context);
 				break;
+			case ODNOKLASSNIKI:
+				currentParser = new OdnoklassnikiAuth(context);
 			default:
 				break;
 		}
@@ -49,6 +52,7 @@ public class SocialNetworkDataParser implements OnRequestFailedListener{
 	}
 	public void setSNResponse(String response) throws JSONException
 	{
+		Log.i("wtf", response);
 		profileData = new JSONObject(response);
 	}
 	public String getName()
