@@ -38,6 +38,8 @@ public class SocialNetworkDataParser implements OnRequestFailedListener{
 				break;
 			case ODNOKLASSNIKI:
 				currentParser = new OdnoklassnikiAuth(context);
+			case MAILRU:
+				currentParser = new MailRuAuth(context);
 			default:
 				break;
 		}
@@ -52,7 +54,8 @@ public class SocialNetworkDataParser implements OnRequestFailedListener{
 	}
 	public void setSNResponse(String response) throws JSONException
 	{
-		Log.i("wtf", response);
+		response = response.replace("[", "");
+		response = response.replace("]", "");
 		profileData = new JSONObject(response);
 	}
 	public String getName()

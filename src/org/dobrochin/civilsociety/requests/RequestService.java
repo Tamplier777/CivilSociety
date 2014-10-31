@@ -126,6 +126,7 @@ public class RequestService extends IntentService{
 	public int getResponseState(String response, String errorDescription[])
 	{
 		int state = STATE_SERVER_CONNECTION_ERROR;
+		Log.i("wtf", response);
 		errorDescription[0] = getResources().getString(R.string.server_connection_error);
 		try {
 			Object respJson = null;
