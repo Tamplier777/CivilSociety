@@ -40,6 +40,8 @@ public class SocialNetworkDataParser implements OnRequestFailedListener{
 				currentParser = new OdnoklassnikiAuth(context);
 			case MAILRU:
 				currentParser = new MailRuAuth(context);
+			case YANDEX:
+				currentParser = new YandexAuth(context);
 			default:
 				break;
 		}
