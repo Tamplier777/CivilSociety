@@ -14,7 +14,7 @@ import android.util.Log;
 public class SocialNetworkDataParser implements OnRequestFailedListener{
 	
 	//Социальные сети:
-	public enum SOCIAL_NETWORKS_LIST {VK, FACEBOOK, GOOGLEP, TWITTER, LINKEDLN, MAILRU, YANDEX, ODNOKLASSNIKI};
+	public enum SOCIAL_NETWORKS_LIST {VK, FACEBOOK, GOOGLEP, TWITTER, LINKEDIN, MAILRU, YANDEX, ODNOKLASSNIKI};
 	
 	private JSONObject profileData;
 	private CurrentAuth currentParser;
@@ -38,10 +38,16 @@ public class SocialNetworkDataParser implements OnRequestFailedListener{
 				break;
 			case ODNOKLASSNIKI:
 				currentParser = new OdnoklassnikiAuth(context);
+				break;
 			case MAILRU:
 				currentParser = new MailRuAuth(context);
+				break;
 			case YANDEX:
 				currentParser = new YandexAuth(context);
+				break;
+			case LINKEDIN:
+				currentParser = new LinkedInAuth(context);
+				break;
 			default:
 				break;
 		}

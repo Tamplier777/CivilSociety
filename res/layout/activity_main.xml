@@ -69,7 +69,16 @@
             android:layout_height="40dp"
             android:text="mail"
             android:onClick="onClick"
-            />
+            />  
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/social_panel"
+        android:id="@+id/social_panel2"
+        >
         <Button
             android:id="@+id/yandex_auth"
             android:layout_width="40dp"
@@ -77,9 +86,16 @@
             android:text="ya"
             android:onClick="onClick"
             />
+        <Button
+            android:id="@+id/linkedin_auth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="ln"
+            android:onClick="onClick"
+            />
     </LinearLayout>
     <ScrollView
-        android:layout_below="@id/social_panel"
+        android:layout_below="@id/social_panel2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >

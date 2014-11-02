@@ -69,7 +69,7 @@ public abstract class BaseActivity extends Activity {
 		receiverRegistered = false;
 		needToUnregisterReceiver = true;
 	}
-	private void showAlertDialog(String message)
+	public void showAlertDialog(String message)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Ошибка!")
